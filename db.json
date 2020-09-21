@@ -1,0 +1,29 @@
+{
+  "contacts": [
+    {
+      "name": "John Doe",
+      "email": "jdoe@gmail.com",
+      "id": 1
+    },
+    {
+      "id": 2,
+      "name": "Philip Banks",
+      "email": "philipb@yahoo.com"
+    },
+    {
+      "name": "Andi Cirjaliu",
+      "email": "andicirjaliu@hotmail.com",
+      "id": 4
+    },
+    {
+      "id": 6,
+      "name": "aaaabbbb",
+      "email": "andicirjaliu2aaaa@hotmail.com"
+    },
+    {
+      "name": "aaaa",
+      "email": "sss@sss.com",
+      "id": 7
+    }
+  ]
+}
