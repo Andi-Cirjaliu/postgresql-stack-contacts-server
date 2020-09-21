@@ -5,7 +5,7 @@ const server = express();
 
 //read config
 require('dotenv').config();
-console.log('Deployment: ', process.env.NODE_ENV);
+console.log('Environment: ', process.env.NODE_ENV);
 
 //connect to database
 

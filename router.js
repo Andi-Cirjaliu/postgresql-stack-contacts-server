@@ -1,6 +1,5 @@
 const express = require('express');
 const {check, validationResult} = require('express-validator');
-const axios = require('axios');
 const db = require('./db/index');
 
 const router = express.Router();
@@ -24,22 +23,26 @@ router.get('/', async (req,res, next) => {
 });
 
 //Add a new contact
-router.post('/', [
-    check('name', 'Name is required').notEmpty(),
-    check('email', 'Email does not have a valid format').isEmail()
-], async (req,res, next) => {
+router.post(
+  "/",
+  [
+    check("name", "Name is required").notEmpty(),
+    check("email", "Email does not have a valid format").isEmail(),
+  ],
+  async (req, res, next) => {
     const errors = validationResult(req);
-    console.log("errors: ", errors);
     if (!errors.isEmpty()) {
+      console.log("errors: ", errors);
       return res.status(400).json({ errors: errors.array() });
     }
 
     //the fields are valid
-    const {name, email} = req.body;
+    const { name, email } = req.body;
 
     //add the contact to database
     const contact = {
-        name, email
+      name,
+      email,
     };
 
     let data;
@@ -53,7 +56,8 @@ router.post('/', [
       console.log(error);
       return res.status(400).json({ msg: "An internal error occured" });
     }
-});
+  }
+);
 
 //Update a contact
 router.put('/:id', [
@@ -61,8 +65,8 @@ router.put('/:id', [
     check('email', 'Email does not have a valid format').isEmail()
 ],async (req,res, next) => {
     const errors = validationResult(req);
-    console.log("errors: ", errors);
     if (!errors.isEmpty()) {
+      console.log("errors: ", errors);      
       return res.status(400).json({ errors: errors.array() });
     }
 
