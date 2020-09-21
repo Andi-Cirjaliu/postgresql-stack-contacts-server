@@ -3,10 +3,6 @@ const {check, validationResult} = require('express-validator');
 const axios = require('axios');
 const db = require('./db/index');
 
-const USE_DB = true;
-const JSON_SERVER_URL=process.env.JSON_SERVER_URL;
-console.log('JSON_SERVER_URL:', JSON_SERVER_URL);
-
 const router = express.Router();
 
 //Get all the contacts
@@ -16,13 +12,7 @@ router.get('/', async (req,res, next) => {
     let data;
 
     try {
-      if (USE_DB) {
-        data = await db.getContacts();
-      } else {
-        const response = await axios.get(`${JSON_SERVER_URL}`);
-        // const response = await axios.get('/contacts');
-        data = response.data;
-      }
+      data = await db.getContacts();
       console.log(data);
 
       return res.status(200).json(data);
@@ -55,18 +45,7 @@ router.post('/', [
     let data;
 
     try {
-      if (USE_DB) {
-        data = await db.addContact(contact);
-      } else {
-        const response = await axios.post(
-          `${JSON_SERVER_URL}`,
-          contact,
-          {
-            headers: { "Content-Type": "application/json" },
-          }
-        );
-        data = response.data;
-      }
+      data = await db.addContact(contact);
       console.log(data);
 
       return res.status(200).json(data);
@@ -100,16 +79,7 @@ router.put('/:id', [
     let data;
 
     try {
-      if (USE_DB) {
-        data = await db.updateContact(contact);
-      } else {
-        const response = await axios.put(
-          `${JSON_SERVER_URL}/${id}`,
-          contact,
-          { headers: { "Content-Type": "application/json" } }
-        );
-        data = response.data;
-      }
+      data = await db.updateContact(contact);
       console.log(data);
 
       return res.status(200).json(data);
@@ -125,11 +95,7 @@ router.delete('/:id', async (req,res, next) => {
     const {id} = req.params;
 
     try {
-      if (USE_DB) {
-        await db.deleteContact(id);
-      } else {
-        await axios.delete(`${JSON_SERVER_URL}/${id}`);
-      }
+      await db.deleteContact(id);
 
       return res.status(200).json({ msg: "The contact was deleted" });
     } catch (error) {
