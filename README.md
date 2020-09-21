@@ -1,7 +1,7 @@
 This project 
 
 To run the application you need to configure the application first. Rename .env_sample to .env.<br />
-You need to specify in .env file the settings to connect to Postgres database server.
+Then specify in .env file the settings to connect to Postgres database server.
 
 ## Available Scripts
 
