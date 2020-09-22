@@ -1,6 +1,8 @@
 const express = require('express');
 const {check, validationResult} = require('express-validator');
+const { getContactsByName } = require('./db/index');
 const db = require('./db/index');
+const {counterAddSucceded, counterAddFailed, gaugeTotalContacts} = require('./metrics');
 
 const router = express.Router();
 
@@ -33,6 +35,7 @@ router.post(
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       console.log("errors: ", errors);
+      counterAddFailed.inc();
       return res.status(400).json({ errors: errors.array() });
     }
 
@@ -48,12 +51,29 @@ router.post(
     let data;
 
     try {
+      data = await db.getContactsByName(name);
+      if ( data.length > 0 ) {
+        console.log('A contact with this name alredy exists');
+        counterAddFailed.inc();
+        return res.status(400).json({ msg: "A contact with this name alredy exists" });
+      }
+
+      data = await db.getContactsByEmail(name);
+      if ( data.length > 0 ) {
+        console.log('A contact with this email alredy exists');
+        counterAddFailed.inc();
+        return res.status(400).json({ msg: "A contact with this email alredy exists" });
+      }
+
       data = await db.addContact(contact);
       console.log(data);
+
+      counterAddSucceded.inc();
 
       return res.status(200).json(data);
     } catch (error) {
       console.log(error);
+      counterAddFailed.inc();
       return res.status(400).json({ msg: "An internal error occured" });
     }
   }

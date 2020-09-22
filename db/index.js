@@ -11,14 +11,14 @@ const pool = new Pool({
 
 const connect = async () => {
       const client = await pool.connect();
-      console.log('connected to Postgres database...');
+      // console.log('connected to Postgres database...');
       return client;
 }
 
 const disconnect = async (client) => {
     if (client) {
         await client.release();
-        console.log("disconnected from Postgres database...");
+        // console.log("disconnected from Postgres database...");
     }
 }
 
@@ -134,11 +134,88 @@ const deleteContact = async (id) => {
     return result;
 }
 
+const getContactsByName = async (name) => {
+
+  const query = {
+    text: "SELECT * FROM CONTACTS WHERE NAME = $1",
+    values: [name],
+  }; 
+  
+  let client;
+  let result;
+
+  try {
+    client = await connect();
+    const response = await client.query(query);
+    console.log('Results: ', response.rows);
+    result = response.rows;
+  } catch (err) {
+    console.log('Database error: ', err.message);
+    throw err;
+  } finally {
+    await disconnect(client);
+  }
+
+  return result;
+}
+
+const getContactsByEmail = async (email) => {
+
+  const query = {
+    text: "SELECT * FROM CONTACTS WHERE EMAIL = $1",
+    values: [email],
+  }; 
+  
+  let client;
+  let result;
+
+  try {
+    client = await connect();
+    const response = await client.query(query);
+    console.log('Results: ', response.rows);
+    result = response.rows;
+  } catch (err) {
+    console.log('Database error: ', err.message);
+    throw err;
+  } finally {
+    await disconnect(client);
+  }
+
+  return result;
+}
+
+const getContactsCount = async () => {
+
+  const query = "SELECT COUNT(*) FROM CONTACTS"; 
+  
+  let client;
+  let result;
+
+  try {
+    client = await connect();
+    const response = await client.query(query);
+    // console.log('Results: ', response.rows);
+    result = response.rows[0].count;
+  } catch (err) {
+    console.log('Database error: ', err.message);
+    throw err;
+  } finally {
+    await disconnect(client);
+  }
+
+  console.log('Count: ', result);
+
+  return result;
+}
+
 module.exports = {
     getContacts,
     addContact,
     updateContact,
-    deleteContact
+    deleteContact,
+    getContactsCount,
+    getContactsByName,
+    getContactsByEmail,
 }
 
 // connect();
@@ -146,4 +223,7 @@ module.exports = {
 // addContact({name: 'testaaa testaaa', email: 'testaaa@test.com'});
 // updateContact({id: 3, name: 'test test2', email: 'test_upd@test.com'})
 // deleteContact(3);
+// getContactsCount();
+// getContactsByName('Andi Cirjaliu');
+// getContactsByEmail('nykolet2@gmail.com');
 

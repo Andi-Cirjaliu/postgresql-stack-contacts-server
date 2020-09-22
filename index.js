@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const {counterRequests} = require('./metrics');
 
 const server = express();
 
@@ -11,17 +12,31 @@ console.log('Environment: ', process.env.NODE_ENV);
 
 server.use(express.json());
 server.use(cors());
+
+server.use(async (req, res, next) => {
+  //get total contacts
+  if ( req.url !== '/metrics' ) {
+    // counterRequestsTotal.inc();
+    counterRequests.labels('total').inc();
+  }
+  next();
+});
+
+server.use(require('./routerMetrics'));
 server.use('/contacts', require('./router'));
 
 //Handle the wrong URLs
 server.use((req, res, next) => {
-    console.log('');
+    console.log('Not found ', req.url);
+    // counterRequestsNotFound.inc();
+    counterRequests.labels('Not found').inc();
     res.status(404).json({"msg": "The page could not be found"});
 });
 
 //Generic error handler
 server.use(function (err, req, res, next) {
   console.error(err.stack);
+  counterRequests.labels('Internal error').inc();
   res.status(500).json({"msg": "An internal error occured"});
 });
 
