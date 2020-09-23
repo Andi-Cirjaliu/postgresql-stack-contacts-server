@@ -58,7 +58,7 @@ router.post(
         return res.status(400).json({ msg: "A contact with this name alredy exists" });
       }
 
-      data = await db.getContactsByEmail(name);
+      data = await db.getContactsByEmail(email);
       if ( data.length > 0 ) {
         console.log('A contact with this email alredy exists');
         counterAddFailed.inc();
@@ -72,9 +72,10 @@ router.post(
 
       return res.status(200).json(data);
     } catch (error) {
-      console.log(error);
+      console.log('Add contact failed with error: ', error);
       counterAddFailed.inc();
-      return res.status(400).json({ msg: "An internal error occured" });
+      return next(error);
+      // return res.status(400).json({ msg: "An internal error occured" });
     }
   }
 );
@@ -109,7 +110,8 @@ router.put('/:id', [
       return res.status(200).json(data);
     } catch (error) {
       console.log(error);
-      return res.status(400).json({ msg: "An internal error occured" });
+      return next(error);
+      // return res.status(400).json({ msg: "An internal error occured" });
     }
 });
 
@@ -124,7 +126,8 @@ router.delete('/:id', async (req,res, next) => {
       return res.status(200).json({ msg: "The contact was deleted" });
     } catch (error) {
       console.log(error);
-      return res.status(400).json({ msg: "An internal error occured" });
+      return next(error);
+      // return res.status(400).json({ msg: "An internal error occured" });
     }
 });
 

@@ -147,7 +147,7 @@ const getContactsByName = async (name) => {
   try {
     client = await connect();
     const response = await client.query(query);
-    console.log('Results: ', response.rows);
+    console.log('Contacts by name: ', response.rows);
     result = response.rows;
   } catch (err) {
     console.log('Database error: ', err.message);
@@ -172,7 +172,7 @@ const getContactsByEmail = async (email) => {
   try {
     client = await connect();
     const response = await client.query(query);
-    console.log('Results: ', response.rows);
+    console.log('Contacts by email: ', response.rows);
     result = response.rows;
   } catch (err) {
     console.log('Database error: ', err.message);

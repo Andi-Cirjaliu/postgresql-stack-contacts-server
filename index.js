@@ -29,14 +29,14 @@ server.use('/contacts', require('./router'));
 server.use((req, res, next) => {
     console.log('Not found ', req.url);
     // counterRequestsNotFound.inc();
-    counterRequests.labels('Not found').inc();
+    counterRequests.labels('page not found').inc();
     res.status(404).json({"msg": "The page could not be found"});
 });
 
 //Generic error handler
 server.use(function (err, req, res, next) {
-  console.error(err.stack);
-  counterRequests.labels('Internal error').inc();
+  console.error('An unhandled error occured: ', err.stack);
+  counterRequests.labels('internal error').inc();
   res.status(500).json({"msg": "An internal error occured"});
 });
 
